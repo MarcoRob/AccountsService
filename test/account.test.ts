@@ -33,6 +33,7 @@ describe("/users", () => {
 
         it('Should return an error for an invalid user', (done) => {
             let user = { email: "megacorreo", name: "Francisco Rodriguez" };
+
             request(app).post("/accounts")
                 .send(user)
                 .end((err, response) => {
