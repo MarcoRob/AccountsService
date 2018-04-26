@@ -1,29 +1,74 @@
-import * as mocha from "mocha";
 import * as chai from "chai";
-import chaiHttp = require("chai-http");
+import * as request from "supertest";
 
 import app from "../src/App";
 
-chai.use(chaiHttp);
-
 const expect = chai.expect;
 
-describe("baseRoute", () => {
-    it('Should return a JSON of users', () => {
-        return chai.request(app)
-                .get("/users")
-                .then(res => {
-                    expect(res.type).to.eql("application/json");
+describe("/users", () => {
+    context("GET /users", () => {
+        it('Should return a JSON of users', (done) => {
+            request(app).get("/users")
+                .end((err, response) => {
+                    if(err) throw err;
+                    expect(response.statusCode).to.equal(200);
+                    expect(response.body).to.be.a("object");
+                    done();
                 });
+        });
     });
 
-    it('Should add a new user', () => {
-        return chai.request(app)
-                .post('/users')
-                .send({"email":"correo2@prueba.com", "name":"Axel Rodriguez"})
-                .then(res => {
-                    console.log(res);
-                    expect(res.body.message).to.eql('User Added');
+    context("POST /users", () => {
+        it('Should add a new user', (done) => {
+            let user = { email: "correo4@prueba.com", name: "Axel Rodriguez" };
+            request(app).post("/users")
+                .send(user)
+                .end((err, response) => {
+                    if (err) throw err;
+                    expect(response.statusCode).to.equal(200);
+                    expect(response.body.message).eql("User Added");
+                    done();
                 });
-      });
+        });
+
+        it('Should return an error for an invalid user', (done) => {
+            let user = { email: "megacorreo", name: "Francisco Rodriguez" };
+            request(app).post("/users")
+                .send(user)
+                .end((err, response) => {
+                    if (err) throw err;
+                    expect(response.statusCode).to.equal(400);
+                    expect(response.body.message).eql("Invalid User");
+                    done();
+                });
+        });
+    });
 });
+
+describe("/login", () => {
+    context("POST /login", () => {
+        it("Should return a valid login code and message", (done) => {
+            let credentials = { email: "correo2@prueba.com" };
+            request(app).post("/login")
+                .send(credentials)
+                .end((err, response) => {
+                    if(err) throw err;
+                    expect(response.statusCode).to.equal(200);
+                    expect(response.body.message).eql("Success Login!");
+                    done();
+                });
+        });
+
+        it("Should return an invalid login code and message", (done) => {
+            let credentials = { "email": "bademail" };
+            request(app).post("/login")
+                .send(credentials)
+                .end((err, response) => {
+                    if (err) throw err;
+                    expect(response.statusCode).to.equal(401);
+                    expect(response.body.message).eql("Bad Credentials");
+                    done();
+                });
+        });
+    });
+})
