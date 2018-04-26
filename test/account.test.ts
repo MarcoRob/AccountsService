@@ -5,8 +5,8 @@ import app from "../src/App";
 
 const expect = chai.expect;
 
-describe("/users", () => {
-    context("GET /users", () => {
+describe("/accounts", () => {
+    context("GET /accounts", () => {
         it('Should return a JSON of users', (done) => {
             request(app).get("/accounts")
                 .end((err, response) => {
@@ -18,7 +18,7 @@ describe("/users", () => {
         });
     });
 
-    context("POST /users", () => {
+    context("POST /accounts", () => {
         it('Should add a new user', (done) => {
             let user = { email: "correo4@prueba.com", name: "Axel Rodriguez" };
             request(app).post("/accounts")
