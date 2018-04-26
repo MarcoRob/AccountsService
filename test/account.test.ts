@@ -8,7 +8,7 @@ const expect = chai.expect;
 describe("/users", () => {
     context("GET /users", () => {
         it('Should return a JSON of users', (done) => {
-            request(app).get("/users")
+            request(app).get("/accounts")
                 .end((err, response) => {
                     if(err) throw err;
                     expect(response.statusCode).to.equal(200);
@@ -21,7 +21,7 @@ describe("/users", () => {
     context("POST /users", () => {
         it('Should add a new user', (done) => {
             let user = { email: "correo4@prueba.com", name: "Axel Rodriguez" };
-            request(app).post("/users")
+            request(app).post("/accounts")
                 .send(user)
                 .end((err, response) => {
                     if (err) throw err;
@@ -33,7 +33,8 @@ describe("/users", () => {
 
         it('Should return an error for an invalid user', (done) => {
             let user = { email: "megacorreo", name: "Francisco Rodriguez" };
-            request(app).post("/users")
+
+            request(app).post("/accounts")
                 .send(user)
                 .end((err, response) => {
                     if (err) throw err;
