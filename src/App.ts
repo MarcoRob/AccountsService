@@ -29,7 +29,7 @@ class App {
     }
 
     private routes(): void {
-        this.express.use("/users", AccountRouter);
+        this.express.use("/", AccountRouter);
     }
 }
 

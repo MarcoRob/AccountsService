@@ -18,15 +18,17 @@ export default class AccountController {
     }
 
     public login(req: Request, res : Response, next: NextFunction) {
-        let user = req.body.email || "";
+        let user = req.body.email;
+        if(user == undefined) {
+            res.statusCode = 401;
+            res.send({message: "Bad Credentials"})
+        }
         console.log("User " + user);
             user = user.split("@")[0];
         if(fileLoader.get(user)) {
             res.statusCode = 200;
             res.send({message:"Success Login!", user:user});
         }
-        res.statusCode = 401;
-        res.send({message:"Bad Credentials"});
     }
 
     public add(req: Request, res : Response, next: NextFunction) {
@@ -41,6 +43,22 @@ export default class AccountController {
         } else {
             res.statusCode = 400;
             res.send("Invalidad User");
+        }
+    }
+
+    public delete(req: Request, res : Response, next: NextFunction) {
+        console.log(JSON.stringify(req.params.userId));
+        let user : string = req.params.userId;
+        
+        //let user : string = data["user"];
+        let isRemoved : boolean  = fileWriter.delete(user);
+
+        if(isRemoved) {
+            res.statusCode = 200;
+            res.send("User Removed");
+        } else {
+            res.statusCode = 400;
+            res.send("Invalidad User for Removed");
         }
     }
 
