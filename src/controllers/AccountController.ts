@@ -39,10 +39,10 @@ export default class AccountController {
 
         if(isAdded) {
             res.statusCode = 200;
-            res.send("User Added");
+            res.send({message:"User Added", user:email.split("@")[0]});
         } else {
             res.statusCode = 400;
-            res.send("Invalidad User");
+            res.send({message:"Invalidad User"});
         }
     }
 
