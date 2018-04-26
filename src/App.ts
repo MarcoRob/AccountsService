@@ -2,7 +2,8 @@ import * as path from 'path';
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
-import AccountRouter from './routes/accountRoutes';
+import * as cors from "cors";
+import AccountRouter from './routes/AccountRouter';
 
 class App {
 
@@ -18,17 +19,17 @@ class App {
         this.express.use(logger("dev"));
         this.express.use(bodyParser.json());
         this.express.use(bodyParser.urlencoded({extended:false}));
+        this.express.use(cors({
+            allowedHeaders: ["Origin", "X-Requested-With", "Content-Type", "Accept", "X-Access-Token"],
+            credentials: true,
+            methods: "GET, HEAD, OPTIONS, PUT, PATCH, POST, DELETE",
+            origin: "*",
+            preflightContinue: false
+        }));
     }
 
     private routes(): void {
-        let router = express.Router();
-        router.get("/", (req, res, next) => {
-            res.json({
-                message: "Hello World!"
-            });
-        });
-        this.express.use("/", router);
-        this.express.use("/accounts", AccountRouter);
+        this.express.use("/users", AccountRouter);
     }
 }
 

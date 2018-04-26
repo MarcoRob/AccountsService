@@ -1,30 +1,29 @@
 import * as fs from "fs";
 import IWriter from "./IWriter";
+import ILoader from "./ILoader";
+import FileLoader from "./FileLoader";
+import User from "../models/User";
+
 const DBPATH = process.cwd() + "/accounts.json";
+
+let fileLoader : ILoader = new FileLoader();
+
 
 export default class FileWriter implements IWriter {
     
     dbPath : string = DBPATH;
-
-    constructor() {
-        this.init();
-    }
-
-    public init() {
-        if(fs.existsSync(this.dbPath)) {
-            return "Database already created";
-        } else {
-            fs.writeFileSync(this.dbPath, "[]");
-            return "Database created";
-        }
-    }
+    fileLoader : ILoader = fileLoader;
+    constructor() {}
 
     public add(email:string, name:string) : boolean {
-        let users : any = this.getAll();
-        let userId = this.getUserId(email);
-
-        if(!this.get(userId)) {
-            users[userId] = {"email":email, "user":userId, "name":name};
+        let users : any = this.fileLoader.getAll();
+        let newUser : User = new User(name, email);
+        let userId : string = newUser.getUserId();
+        if(!this.fileLoader.get(userId)) {
+            if(newUser.validateEmail() == false) {
+                return false;
+            }
+            users[userId] = newUser.getUserObject();
             fs.writeFileSync(this.dbPath, JSON.stringify(users));
             return true;
         }
@@ -32,22 +31,13 @@ export default class FileWriter implements IWriter {
     }
 
     public delete(user:string) : boolean {
-
+        let users_db : any = this.fileLoader.getAll();
+        if(users_db[user]) {
+            delete users_db[user];
+            fs.writeFileSync(this.dbPath, JSON.stringify(users_db));
+            return true;
+        }
         return false;
-    }
-
-    public get(user:string) : JSON {
-        let db = this.getAll();
-        if(db[user]) {
-            return db[user];
-        } 
-        return null;
-    }
-
-    public getAll() : JSON {
-        let db = fs.readFileSync(this.dbPath).toString() || "{}";
-        console.log(db);
-        return JSON.parse(db);
     }
 
     public getUserId(email:string) : string {

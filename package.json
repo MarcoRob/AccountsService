@@ -4,7 +4,7 @@
   "description": "Code base for a accounts microservice for TaskManager system",
   "main": "index.js",
   "scripts": {
-    "start": "npm run build && node dist/index.js",
+    "start": "npm run build && node dist/server.js",
     "build": "gulp scripts",
     "test": "mocha --reporter spec --compilers ts:ts-node/register test/**/*.test.ts"
   },
@@ -37,7 +37,9 @@
     "typescript": "^2.0.6"
   },
   "dependencies": {
+    "@types/cors": "^2.8.4",
     "body-parser": "^1.15.2",
+    "cors": "^2.8.4",
     "debug": "^2.2.0",
     "express": "^4.14.0",
     "morgan": "^1.7.0"
