@@ -23,7 +23,7 @@ export default class AccountController {
             user = user.split("@")[0];
         if(fileLoader.get(user)) {
             res.statusCode = 200;
-            res.send({message:"Success Login!"});
+            res.send({message:"Success Login!", user:user});
         }
         res.statusCode = 401;
         res.send({message:"Bad Credentials"});
