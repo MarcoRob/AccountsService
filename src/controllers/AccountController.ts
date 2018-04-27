@@ -37,10 +37,26 @@ export default class AccountController {
 
         if(isAdded) {
             res.statusCode = 200;
-            res.send({message: "User Added"});
+            res.send({message:"User Added", user:email.split("@")[0]});
         } else {
             res.statusCode = 400;
             res.send({ message: "Invalid User" });
+        }
+    }
+
+    public delete(req: Request, res : Response, next: NextFunction) {
+        console.log(JSON.stringify(req.params.userId));
+        let user : string = req.params.userId;
+        
+        //let user : string = data["user"];
+        let isRemoved : boolean  = fileWriter.delete(user);
+
+        if(isRemoved) {
+            res.statusCode = 200;
+            res.send("User Removed");
+        } else {
+            res.statusCode = 400;
+            res.send("Invalidad User for Removed");
         }
     }
 
